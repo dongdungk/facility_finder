@@ -12,12 +12,6 @@ import 'map/view/facility_review_write_screen.dart';
 
 import 'login/service/auth_service.dart';
 
-// Static Status Views
-import '/static/view/local_status.dart';
-import '/static/view/search_gym.dart';
-import '/static/view/facilities_status.dart';
-import '/static/view/compare_status.dart';
-
 // Main App Views
 import 'login/view/login_view.dart';
 import 'map/view/main_screen.dart';
@@ -28,17 +22,21 @@ import 'map/view/facility_photo_screen.dart';
 import 'map/view/favorite_screen.dart';
 import 'map/view/search_screen.dart';
 
-// Tagging Views
-import 'tagging/view/tagging_main_screen.dart';
-import 'tagging/view/tagging_success_screen.dart';
+// ⭐️ [NEW] QR 관련 화면 임포트 (경로 확인 필수)
+import 'qr/view/qr_scan_screen.dart';
+
+
+
 
 // ------------------------------
 // Navigation Keys
 // ------------------------------
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'ShellHome');
-final _shellNavigatorStatsKey = GlobalKey<NavigatorState>(debugLabel: 'ShellStats');
-final _shellNavigatorEditKey = GlobalKey<NavigatorState>(debugLabel: 'ShellEdit');
+
+// ⭐️ [RENAME] EditKey -> QrKey로 변경
+final _shellNavigatorQrKey = GlobalKey<NavigatorState>(debugLabel: 'ShellQr');
+
 final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'ShellProfile');
 
 // ------------------------------
@@ -49,16 +47,13 @@ final goRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
 
   redirect: (BuildContext context, GoRouterState state) {
-    // User 타입이 provider를 통해 제공된다고 가정
     final user = context.read<User?>();
     final isLoggedIn = user != null;
     final isLoggingIn = state.uri.toString() == '/login';
 
     if (isLoggedIn) {
-      // 로그인 상태라면, 로그인 페이지 접근 시 / 로 리다이렉트
       return isLoggingIn ? '/' : null;
     } else {
-      // 비로그인 상태라면, /login 페이지가 아닐 경우 /login으로 리다이렉트
       return isLoggingIn ? null : '/login';
     }
   },
@@ -104,51 +99,29 @@ final goRouter = GoRouter(
         ),
 
         // ------------------------------
-        // 탭 1: 통계 (Stats)
+        // 탭 1: 통계 (Stats) - (필요시 추가)
         // ------------------------------
         StatefulShellBranch(
-          navigatorKey: _shellNavigatorStatsKey,
           routes: [
             GoRoute(
-              path: '/static',
-              builder: (context, state) => const GymCompareStatPage(),
-              routes: [
-                GoRoute(
-                  path: 'compare',
-                  builder: (context, state) => const GymCompareStatPage(),
-                ),
-                GoRoute(
-                  path: 'facilities',
-                  builder: (context, state) => const FacilitiesStatusPage(),
-                ),
-                GoRoute(
-                  path: 'LocalStat',
-                  builder: (context, state) => const LocalStatusPage(),
-                ),
-                GoRoute(
-                  path: 'SearchGym',
-                  builder: (context, state) => const SearchGymPage(),
-                ),
-              ],
+              path: '/stats', // 임시 경로
+              builder: (context, state) => const Center(child: Text("통계 화면")),
             ),
           ],
         ),
 
         // ------------------------------
-        // 탭 2: 입출입 (Tagging/Edit)
+        // ⭐️ 탭 2: QR 스캔 (QR Scan) - [수정됨]
         // ------------------------------
         StatefulShellBranch(
-          navigatorKey: _shellNavigatorEditKey,
+          navigatorKey: _shellNavigatorQrKey, // 변경된 키 사용
           routes: [
             GoRoute(
-              path: '/edit',
-              builder: (context, state) => const TaggingMainScreen(),
-              routes: [
-                GoRoute(
-                  path: 'tagging_success',
-                  builder: (context, state) => const TaggingSuccessScreen(),
-                ),
-              ],
+              path: '/qr', // ⭐️ 경로를 /edit에서 /qr로 변경
+              builder: (context, state) => const QRScanScreen(),
+              // 💡 서브 라우트 제거:
+              // QR 성공 화면은 QRScanScreen 내부에서 상태 변화(State)로 처리되므로
+              // 별도의 URL 라우트가 필요하지 않습니다.
             ),
           ],
         ),
@@ -183,31 +156,25 @@ final goRouter = GoRouter(
           path: 'reviews',
           name: 'facilityReviews',
           builder: (context, state) {
-            final id = state.pathParameters['id']!; // facility ID
+            final id = state.pathParameters['id']!;
             return FacilityReviewScreen(facilityId: id);
           },
           routes: [
-            // 🔹 리뷰 수정 경로
+            // 🔹 리뷰 수정
             GoRoute(
-              path: ':reviewId/edit', // 예: /facility/123/reviews/456/edit
+              path: ':reviewId/edit',
               name: 'editReview',
               pageBuilder: (context, state) {
                 final reviewId = state.pathParameters['reviewId']!;
-                // state.extra로 FacilityReviewModel 객체를 넘겨 받았다고 가정
                 final reviewToEdit = state.extra as FacilityReviewModel?;
 
                 if (reviewToEdit == null) {
                   return const MaterialPage(
                     child: Scaffold(
-                      appBar: PreferredSize(
-                        preferredSize: Size.fromHeight(56.0),
-                        child: Text('오류'),
-                      ),
-                      body: Center(child: Text('수정할 리뷰 정보를 찾을 수 없습니다. (데이터 누락)')),
+                      body: Center(child: Text('데이터 누락')),
                     ),
                   );
                 }
-
                 return MaterialPage(
                   child: ReviewEditScreen(
                     reviewId: reviewId,
@@ -216,12 +183,12 @@ final goRouter = GoRouter(
                 );
               },
             ),
-            // 🔹 리뷰 작성 경로
+            // 🔹 리뷰 작성
             GoRoute(
-              path: 'write', // 예: /facility/123/reviews/write
+              path: 'write',
               name: 'writeReview',
               builder: (context, state) {
-                final facilityId = state.pathParameters['id']!; // 부모 경로에서 facility ID 가져옴
+                final facilityId = state.pathParameters['id']!;
                 return ReviewWriteScreen(facilityId: facilityId);
               },
             ),
@@ -236,7 +203,7 @@ final goRouter = GoRouter(
             return FacilityPhotoScreen(facilityId: id);
           },
         ),
-      ], // end of facility/:id sub-routes
+      ],
     ),
   ],
 );

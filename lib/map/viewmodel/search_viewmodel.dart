@@ -1,32 +1,39 @@
 // lib/map/viewmodel/search_viewmodel.dart
 import 'package:flutter/material.dart';
-
-// ⭐️ "package:..." 대신 상대 경로 사용
 import '../model/facility_model.dart';
 import '../service/facility_service.dart';
+import '../service/kakao_service.dart'; // ⭐️ KakaoService 추가
 
 class SearchViewModel extends ChangeNotifier {
   final FacilityService _facilityService;
-  SearchViewModel(this._facilityService);
+  final KakaoService _kakaoService;
 
-  List<FacilityModel> _facilities = [];
-  List<FacilityModel> get facilities => _facilities;
+  SearchViewModel(this._facilityService, this._kakaoService);
+
+  List<FacilityModel> _results = [];
+  List<FacilityModel> get results => _results;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  Future<void> search(String query) async {
+    if (query.isEmpty) return;
 
-  Future<void> searchFacilities(String query) async {
     _isLoading = true;
-    notifyListeners(); // 1. 로딩 시작 알림
+    notifyListeners();
 
-    // ⭐️⭐️⭐️ [최종 수정] ⭐️⭐️⭐️
-    // 1. Service에게 "배드민턴만 + 지역구 필터링된" 목록을 요청합니다.
-    List<FacilityModel> finalFilteredList = await _facilityService.searchFacilities(query);
+    try {
+      // 서울시 API와 카카오 API 결과를 병렬로 호출하여 합칩니다.
+      final responses = await Future.wait([
+        _facilityService.searchFacilities(query),
+        _kakaoService.searchStudyCafes(query),
+      ]);
 
-    // 2. ViewModel은 받은 목록을 그대로 사용합니다. (중복 필터 제거)
-    _facilities = finalFilteredList;
+      _results = [...responses[0], ...responses[1]];
+    } catch (e) {
+      print("검색 에러: $e");
+    }
 
     _isLoading = false;
-    notifyListeners(); // 3. 최종 목록으로 화면 갱신 알림
+    notifyListeners();
   }
 }

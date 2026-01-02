@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "1004223604376",
+    "project_id": "badminfinder-84d4d",
+    "storage_bucket": "badminfinder-84d4d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004223604376:android:763ac4e1129efb5d0092ed",
+        "android_client_info": {
+          "package_name": "com.example.facility_finder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004223604376-b8fbaebrd7ie8o0tts31bi7bo0khaqdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCghhLXhTBF4ecroZinsU5JXIBy81updLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004223604376-b8fbaebrd7ie8o0tts31bi7bo0khaqdm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1004223604376-6l4o1t792ur4v4sbrf3pvr2v9l2l0p4u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.teamtrow.victor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004223604376:android:6956483b8e30e3960092ed",
+        "android_client_info": {
+          "package_name": "com.teamtrow.victor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004223604376-qnch7ri8cb6ociuisnid3tf6ec77lh2j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.teamtrow.victor",
+            "certificate_hash": "c55a0c1dca2698baf1d115827e7d1521afadea8f"
+          }
+        },
+        {
+          "client_id": "1004223604376-b8fbaebrd7ie8o0tts31bi7bo0khaqdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCghhLXhTBF4ecroZinsU5JXIBy81updLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004223604376-b8fbaebrd7ie8o0tts31bi7bo0khaqdm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1004223604376-6l4o1t792ur4v4sbrf3pvr2v9l2l0p4u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.teamtrow.victor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

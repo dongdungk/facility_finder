@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCghhLXhTBF4ecroZinsU5JXIBy81updLo',
-    appId: '1:1004223604376:android:6956483b8e30e3960092ed',
+    appId: '1:1004223604376:android:763ac4e1129efb5d0092ed',
     messagingSenderId: '1004223604376',
     projectId: 'badminfinder-84d4d',
     storageBucket: 'badminfinder-84d4d.firebasestorage.app',
@@ -66,10 +66,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB8ojz5qZ6BuJbSMsAg4B-d54-anl8QOuY',
-    appId: '1:1004223604376:ios:b95692bf708289b20092ed',
+    appId: '1:1004223604376:ios:5085742c6cbf96710092ed',
     messagingSenderId: '1004223604376',
     projectId: 'badminfinder-84d4d',
     storageBucket: 'badminfinder-84d4d.firebasestorage.app',
-    iosBundleId: 'com.teamtrow.victor',
+    androidClientId: '1004223604376-qnch7ri8cb6ociuisnid3tf6ec77lh2j.apps.googleusercontent.com',
+    iosClientId: '1004223604376-f1n9b0douvc5h0o2paechf9tvetkscsv.apps.googleusercontent.com',
+    iosBundleId: 'com.example.facilityFinder',
   );
+
 }

@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../viewmodel/facility_review_viewmodel.dart';
-import '../view/facility_review_edit_screen.dart'; // RatingInput 재사용을 위해 임포트
+import '../view/facility_review_edit_screen.dart'; // RatingInput 재사용
 
-// ----------------------------------------------------------------------
-// ⭐️ 리뷰 작성 메인 화면 위젯 (ReviewWriteScreen)
-// ----------------------------------------------------------------------
 class ReviewWriteScreen extends StatefulWidget {
-  final String facilityId; // 어떤 시설에 리뷰를 작성할지 ID를 전달받음
+  final String facilityId;
 
   const ReviewWriteScreen({
     super.key,
@@ -20,7 +17,6 @@ class ReviewWriteScreen extends StatefulWidget {
 }
 
 class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
-  // ⭐️ [추가] 닉네임 입력을 위한 컨트롤러
   late TextEditingController _nicknameController;
   late TextEditingController _textController;
   double _currentRating = 5.0;
@@ -28,18 +24,18 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
   @override
   void initState() {
     super.initState();
-    // 💡 Provider를 사용하여 현재 로그인 사용자의 정보를 읽어옵니다.
-    final User? user = context.read<User?>();
+
+    // 💡 Provider를 initState에서 사용할 때는 listen: false가 필수입니다.
+    final User? user = Provider.of<User?>(context, listen: false);
     final String defaultName = user?.displayName ?? '익명 사용자';
 
     _textController = TextEditingController();
-    // ⭐️ [추가] 닉네임 컨트롤러 초기화 시 Firebase displayName을 기본값으로 설정
     _nicknameController = TextEditingController(text: defaultName);
   }
 
   @override
   void dispose() {
-    _nicknameController.dispose(); // ⭐️ [추가] 컨트롤러 dispose
+    _nicknameController.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -48,9 +44,7 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
     final enteredNickname = _nicknameController.text.trim();
     final newText = _textController.text.trim();
 
-    // 유효성 검사
     if (newText.isEmpty || _currentRating == 0.0 || enteredNickname.isEmpty) {
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('닉네임, 별점, 내용을 모두 입력해주세요.')),
       );
@@ -59,7 +53,6 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
 
     final User? user = Provider.of<User?>(context, listen: false);
     if (user == null) {
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('로그인이 필요합니다.')),
       );
@@ -69,11 +62,10 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
     final viewModel = Provider.of<FacilityReviewViewModel>(context, listen: false);
 
     try {
-      // ⭐️ addReview 함수 호출 시 사용자가 입력한 닉네임을 전달
       await viewModel.addReview(
         facilityId: widget.facilityId,
         userId: user.uid,
-        userName: enteredNickname, // ⭐️ 사용자가 입력한 닉네임 사용
+        userName: enteredNickname,
         rating: _currentRating,
         content: newText,
       );
@@ -99,10 +91,8 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ⭐️ [추가] 닉네임 입력 필드
             const Text(
               '닉네임',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -117,14 +107,11 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
               ),
             ),
             const SizedBox(height: 24),
-
             const Text(
               '별점 평가',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-
-            // 1. 별점 입력 위젯
             RatingInput(
               initialRating: _currentRating,
               onRatingChanged: (newRating) {
@@ -134,14 +121,11 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
               },
             ),
             const SizedBox(height: 24),
-
             const Text(
               '리뷰 내용',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-
-            // 2. 텍스트 입력 필드
             TextField(
               controller: _textController,
               maxLines: 6,
@@ -152,8 +136,6 @@ class _ReviewWriteScreenState extends State<ReviewWriteScreen> {
               ),
             ),
             const SizedBox(height: 30),
-
-            // 3. 버튼 섹션
             ElevatedButton(
               onPressed: _submitReview,
               style: ElevatedButton.styleFrom(

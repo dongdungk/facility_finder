@@ -43,9 +43,8 @@ class MainScreen extends StatelessWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: '통계'),
-          //BottomNavigationBarItem(icon: Icon(Icons.location_pin), label: '입출입'),
-          BottomNavigationBarItem(icon: Icon(Icons.forum), label: '커뮤니티'),
-          //BottomNavigationBarItem(icon: Icon(Icons.person), label: '내 정보'),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner), label: 'QR 스캔'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '내 정보'),
         ],
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
