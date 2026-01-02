@@ -10,13 +10,15 @@ class KakaoService {
 
   Future<List<FacilityModel>> searchStudyCafes(String query) async {
     // 카카오 API는 Authorization 헤더에 KakaoAK {REST_API_KEY}를 넣어야 함
-    final Uri url = Uri.parse("$_baseUrl?query=$query");
+    final Uri url = Uri.parse("$_baseUrl?query=$query 스터디카페");
 
     try {
       final response = await http.get(
         url,
         headers: {"Authorization": "KakaoAK $_apiKey"},
       );
+
+      print('😊Kakao API Response: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
