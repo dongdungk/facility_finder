@@ -46,10 +46,10 @@ class _SearchScreenState extends State<SearchScreen> {
             title: Text(facility.name),
             subtitle: Text(facility.address),
             trailing: Text(facility.category,
-                style: TextStyle(color: facility.category == 'studycafe' ? Colors.orange : Colors.green)),
+                style: TextStyle(color: facility.category == '스터디카페' ? Colors.orange : Colors.green)),
             onTap: () {
               // 상세 페이지로 이동 시 카카오 시설 여부 전달
-              bool isKakao = facility.category == 'studycafe';
+              bool isKakao = facility.category == '스터디카페';
               context.push('/facility/${facility.id}', extra: {'isKakao': isKakao});
             },
           );
