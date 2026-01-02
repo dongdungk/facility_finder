@@ -34,14 +34,19 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  google_maps_flutter: ^2.14.0
   provider: ^6.1.5+1
   http: ^1.6.0
   go_router: ^17.0.0
   url_launcher: ^6.3.0
   fl_chart: ^1.1.1
+  kakao_flutter_sdk: ^1.10.0
+  google_maps_flutter: ^2.5.3
+
 
   flutter_dotenv: ^6.0.0
+  permission_handler: ^11.0.0
+  mobile_scanner: ^7.1.4 # 혹은 최신 버전
+  vibration: ^3.1.5 # 스캔 성공 시 진동 피드백 (선택사항)
 
   # ⭐️⭐️⭐️ [필수 추가] 로그인 및 Firebase 코어 ⭐️⭐️⭐️
   firebase_core: ^4.2.1
@@ -50,6 +55,7 @@ dependencies:
   cloud_firestore: ^6.1.0
   firebase_storage: ^13.0.4
   firebase_app_check: ^0.4.1+2
+  kakao_flutter_sdk_common: ^1.10.0
 
 dev_dependencies:
   flutter_test:
