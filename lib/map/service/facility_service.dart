@@ -1,12 +1,14 @@
-// lib/map/service/facility_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/facility_model.dart';
+import '../../map/model/firestore_facility_model.dart'; // 경로 확인 필요
 
 class FacilityService {
   final String _seoulBaseUrl = 'http://openAPI.seoul.go.kr:8088';
   final String _serviceName = 'facilities';
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   final Map<String, String> _queryAliases = {
     'songpa': '송파', 'gwangjin': '광진', 'seongbuk': '성북', 'dongjak': '동작',
@@ -33,18 +35,51 @@ class FacilityService {
         final Map<String, dynamic> body = jsonDecode(utf8.decode(response.bodyBytes));
         List<dynamic> dataList = body[_serviceName]?['row'] ?? body['DATA'] ?? [];
 
-        return dataList
+        List<FacilityModel> results = dataList
             .map((jsonItem) => FacilityModel.fromJson(jsonItem))
             .where((facility) {
           bool isBadminton = facility.category.contains('배드민턴') || facility.name.contains('배드민턴');
           bool isLocationMatch = searchKeyword.isEmpty || facility.district.contains(searchKeyword);
           return isBadminton && isLocationMatch;
         }).toList();
+
+        // ⭐️ 추가: 검색 결과가 있으면 Firestore에 자동 저장
+        if (results.isNotEmpty) {
+          await syncToFirebase(results);
+        }
+
+        return results;
       }
       return [];
     } catch (e) {
       print('Seoul API Error: $e');
       return [];
+    }
+  }
+
+  // ⭐️ 추가: 서울시 데이터를 Firestore에 저장하는 핵심 로직
+  Future<void> syncToFirebase(List<FacilityModel> facilities) async {
+    try {
+      final batch = _db.batch();
+      for (var f in facilities) {
+        String docId = f.id.isEmpty || f.id == f.name ? f.name : f.id;
+        final firestoreModel = FirestoreFacilityModel(
+          id: docId,
+          name: f.name,
+          address: f.address,
+          phone: f.phone,
+          category: f.category,
+          lat: f.lat,
+          lng: f.lng,
+          district: f.district,
+        );
+        var docRef = _db.collection('facilities').doc(docId);
+        batch.set(docRef, firestoreModel.toFirestore(), SetOptions(merge: true));
+      }
+      await batch.commit();
+      print("✅ 서울시 데이터 Firestore 동기화 완료");
+    } catch (e) {
+      print("❌ 서울시 데이터 동기화 에러: $e");
     }
   }
 
