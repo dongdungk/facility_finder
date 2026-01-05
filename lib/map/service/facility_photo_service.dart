@@ -10,7 +10,7 @@ class PhotoService {
     try {
       // 'photos' 컬렉션에서 해당 시설 ID의 문서를 찾습니다.
       final snapshot = await _firestore
-          .collection('photos')
+          .collection('facility_photos')
           .where('facilityId', isEqualTo: facilityId)
           .limit(1)
           .get();
@@ -20,11 +20,10 @@ class PhotoService {
       }
 
       final data = snapshot.docs.first.data();
-      final List<dynamic>? urls = data['urls'] as List<dynamic>?;
+      final List<dynamic>? urls = data['imageurls'] as List<dynamic>?;
 
       // List<dynamic>을 List<String>으로 변환하여 반환
       return urls?.map((e) => e.toString()).toList() ?? [];
-
     } catch (e) {
       print("Firestore Photos Error: $e");
       return [];

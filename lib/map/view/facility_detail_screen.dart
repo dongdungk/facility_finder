@@ -1,4 +1,5 @@
 // lib/map/view/facility_detail_screen.dart
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -10,10 +11,7 @@ import '/map/viewmodel/facility_detail_viewmodel.dart';
 class FacilityDetailScreen extends StatefulWidget {
   final String facilityId;
 
-  const FacilityDetailScreen({
-    super.key,
-    required this.facilityId,
-  });
+  const FacilityDetailScreen({super.key, required this.facilityId});
 
   @override
   State<FacilityDetailScreen> createState() => _FacilityDetailScreenState();
@@ -39,6 +37,17 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
     super.dispose();
   }
 
+  Future<String> getImageUrl(String path) async {
+    // gs:// 경로를 사용하여 참조(Reference)를 만듭니다.
+    print(path);
+    final ref = FirebaseStorage.instance.refFromURL(
+      "gs://badminfinder-84d4d.firebasestorage.app/$path",
+    );
+
+    // 실제 네트워크에서 사용 가능한 https:// 주소를 가져옵니다.
+    return await ref.getDownloadURL();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<FacilityDetailViewModel>();
@@ -48,14 +57,8 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
       appBar: AppBar(
         title: Text(facility?.name ?? '로딩 중...'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.star_border),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.share_outlined),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.star_border), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
         ],
       ),
       body: viewModel.isLoading
@@ -79,11 +82,7 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
             labelColor: Colors.black,
             unselectedLabelColor: Colors.grey,
             indicatorColor: Colors.black,
-            tabs: [
-              _buildTab('정보'),
-              _buildTab('리뷰'),
-              _buildTab('사진'),
-            ],
+            tabs: [_buildTab('정보'), _buildTab('리뷰'), _buildTab('사진')],
             onTap: (index) {
               if (index == 1) {
                 // '리뷰' 탭
@@ -113,7 +112,11 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
         height: 250,
         color: Colors.grey[200],
         alignment: Alignment.center,
-        child: Icon(Icons.image_not_supported_outlined, color: Colors.grey[400], size: 50),
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.grey[400],
+          size: 50,
+        ),
       );
     }
 
@@ -122,24 +125,45 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
       child: GridView.builder(
         padding: const EdgeInsets.all(0),
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: images.length, // "진짜" 데이터(images)의 길이 사용
+        itemCount: images.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // (디자인에 맞게 1, 2 등으로 수정)
+          crossAxisCount: 2,
           crossAxisSpacing: 2,
           mainAxisSpacing: 2,
         ),
         itemBuilder: (context, index) {
-          // "진짜" 데이터(images)의 URL을 사용
-          // (대부분의 서버 이미지는 'Image.network'를 사용합니다)
-          return Image.network(
-            images[index],
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              // 이미지 로드 실패 시
-              return Container(
-                color: Colors.grey[200],
-                alignment: Alignment.center,
-                child: const Icon(Icons.error_outline, color: Colors.grey),
+          // itemBuilder 내부에서 직접 await 하지 말고 FutureBuilder를 반환합니다.
+          return FutureBuilder<String>(
+            future: getImageUrl(images[index]), // URL을 가져오는 비동기 함수
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // URL을 로딩 중일 때 표시할 위젯
+                return Container(
+                  color: Colors.grey[100],
+                  child: const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                );
+              }
+
+              if (snapshot.hasError || !snapshot.hasData) {
+                // URL 로드 실패 시
+                return Container(
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.error_outline, color: Colors.grey),
+                );
+              }
+
+              // URL 로드 성공 시 이미지 표시
+              return Image.network(
+                snapshot.data!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.error_outline, color: Colors.grey),
+                  );
+                },
               );
             },
           );
@@ -179,12 +203,18 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
             children: [
               const Icon(Icons.star, color: Colors.amber, size: 20),
               const SizedBox(width: 4),
-              Text(facility.rating.toString(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(
+                facility.rating.toString(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(width: 8),
-              Text('(${facility.reviewCount} 리뷰)',
-                  style: const TextStyle(fontSize: 16, color: Colors.grey)),
+              Text(
+                '(${facility.reviewCount} 리뷰)',
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -196,21 +226,21 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
             facility.address,
             trailingWidget: TextButton(
               child: const Text('복사'),
-              onPressed: () {/* TODO */},
+              onPressed: () {
+                /* TODO */
+              },
             ),
           ),
-          _buildInfoRow(
-            Icons.access_time_outlined,
-            '운영시간',
-            facility.hours,
-          ),
+          _buildInfoRow(Icons.access_time_outlined, '운영시간', facility.hours),
           _buildInfoRow(
             Icons.call_outlined,
             '전화번호',
             facility.phone,
             trailingWidget: TextButton(
               child: const Text('전화'),
-              onPressed: () {/* TODO */},
+              onPressed: () {
+                /* TODO */
+              },
             ),
           ),
           _buildInfoRow(
@@ -235,13 +265,16 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('현재 "${facility.status}"입니다.',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: facility.status == '운영중'
-                            ? Colors.green
-                            : Colors.orange)),
+                Text(
+                  '현재 "${facility.status}"입니다.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: facility.status == '운영중'
+                        ? Colors.green
+                        : Colors.orange,
+                  ),
+                ),
                 const SizedBox(height: 8),
 
                 // ⭐️ 2. [수정 완료] "가짜" 텍스트를 "진짜" Model 데이터로 교체
@@ -259,8 +292,12 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
   }
 
   // 헬퍼 Row (이전과 동일)
-  Widget _buildInfoRow(IconData icon, String title, String content,
-      {Widget? trailingWidget}) {
+  Widget _buildInfoRow(
+    IconData icon,
+    String title,
+    String content, {
+    Widget? trailingWidget,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -273,18 +310,14 @@ class _FacilityDetailScreenState extends State<FacilityDetailScreen>
             child: Text(
               title,
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[700]),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[700],
+              ),
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              content,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
+          Expanded(child: Text(content, style: const TextStyle(fontSize: 16))),
           if (trailingWidget != null) trailingWidget,
         ],
       ),
