@@ -1,16 +1,17 @@
-// lib/map/service/kakao_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/facility_model.dart';
+import '../../map/model/firestore_facility_model.dart'; // 경로 확인 필요
 
 class KakaoService {
   final String _baseUrl = "https://dapi.kakao.com/v2/local/search/keyword.json";
   final String _apiKey = dotenv.env['KAKAO_REST_API_KEY'] ?? "";
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<List<FacilityModel>> searchStudyCafes(String query) async {
-    // 카카오 API는 Authorization 헤더에 KakaoAK {REST_API_KEY}를 넣어야 함
-    final Uri url = Uri.parse("$_baseUrl?query=$query");
+    final Uri url = Uri.parse("$_baseUrl?query=$query 스터디카페");
 
     try {
       final response = await http.get(
@@ -22,8 +23,14 @@ class KakaoService {
         final data = json.decode(response.body);
         final List documents = data['documents'];
 
-        // 카카오 응답(documents)을 우리 앱의 모델로 변환
-        return documents.map((doc) => FacilityModel.fromKakao(doc)).toList();
+        List<FacilityModel> results = documents.map((doc) => FacilityModel.fromKakao(doc)).toList();
+
+        // 추가: 검색 결과가 있으면 Firestore에 자동 저장
+        if (results.isNotEmpty) {
+          await syncToFirebase(results);
+        }
+
+        return results;
       }
       return [];
     } catch (e) {
@@ -32,9 +39,32 @@ class KakaoService {
     }
   }
 
-  // 상세 페이지 조회를 위한 메서드
+  // 추가: 카카오 데이터를 Firestore에 저장하는 핵심 로직
+  Future<void> syncToFirebase(List<FacilityModel> facilities) async {
+    try {
+      final batch = _db.batch();
+      for (var f in facilities) {
+        final firestoreModel = FirestoreFacilityModel(
+          id: f.id,
+          name: f.name,
+          address: f.address,
+          phone: f.phone,
+          category: f.category,
+          lat: f.lat,
+          lng: f.lng,
+          district: f.district,
+        );
+        var docRef = _db.collection('facilities').doc(f.id);
+        batch.set(docRef, firestoreModel.toFirestore(), SetOptions(merge: true));
+      }
+      await batch.commit();
+      print("✅ 카카오 데이터 Firestore 동기화 완료");
+    } catch (e) {
+      print("❌ 카카오 데이터 동기화 에러: $e");
+    }
+  }
+
   Future<FacilityModel?> getKakaoFacilityDetail(String facilityId) async {
-    // 실제로는 ID 기반 조회를 하거나 검색 결과에서 데이터를 유지합니다.
     return null;
   }
 }

@@ -1,29 +1,23 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ----------------------------------------------------------------------------
+# 1. API Keys and Secret Files (보안 핵심)
+# ----------------------------------------------------------------------------
+.env
+.env*
+android/local.properties
+ios/Flutter/Release.xcconfig
+ios/Flutter/Debug.xcconfig
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
+# ----------------------------------------------------------------------------
+# 2. Firebase Related
+# ----------------------------------------------------------------------------
+# Firebase 설정 파일은 공유해도 되지만, 보안을 위해 숨기기도 합니다.
+# 만약 팀 프로젝트라면 아래 두 줄은 주석 처리할 수도 있습니다.
+# google-services.json
+# GoogleService-Info.plist
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# ----------------------------------------------------------------------------
+# 3. Flutter/Dart/Pub Standard
+# ----------------------------------------------------------------------------
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -33,13 +27,43 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
+# ----------------------------------------------------------------------------
+# 4. Android Related
+# ----------------------------------------------------------------------------
+*.iml
+.gradle/
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/src/main/res/values/google-services.xml
+
+# ----------------------------------------------------------------------------
+# 5. iOS/macOS Related
+# ----------------------------------------------------------------------------
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.[mh]
+**/Runner.xcodeproj/project.xcworkspace
+**/Runner.xcodeproj/xcuserdata
+**/Podfile.lock
+/ios/Pods/
+
+# ----------------------------------------------------------------------------
+# 6. IDE Related (VS Code, IntelliJ)
+# ----------------------------------------------------------------------------
+.idea/
+.vscode/
+*.ipr
+*.iws
+*.swp
+
+# ----------------------------------------------------------------------------
+# 7. Miscellaneous
+# ----------------------------------------------------------------------------
+.DS_Store
+*.log
+.history

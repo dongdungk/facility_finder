@@ -7,30 +7,27 @@
     <application
         android:label="facility_finder"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
-        android:usesCleartextTraffic="true">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"> <activity
+        android:name=".MainActivity"
+        android:exported="true"
+        android:launchMode="singleTop"
+        android:taskAffinity=""
+        android:theme="@style/LaunchTheme"
+        android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+        android:hardwareAccelerated="true"
+        android:windowSoftInputMode="adjustResize">
 
+        <meta-data
+            android:name="io.flutter.embedding.android.NormalTheme"
+            android:resource="@style/NormalTheme"
+            />
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-
-            <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"
-                />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+    </activity>
 
         <meta-data
             android:name="flutterEmbedding"
@@ -38,7 +35,11 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCqxzxXNOyTKdHHX-6EWtzYaypbdtaPfxM" />
+            android:value="AIzaSyD99KLOokmKBkbVx0iOSVkFtSMYvzpJak0" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="cf3919ed0ccd38a794629cdfeb01e1a3" />
 
     </application>
 
@@ -47,5 +48,6 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <package android:name="com.kakao.talk" />
     </queries>
 </manifest>
