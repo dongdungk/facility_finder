@@ -72,6 +72,10 @@ class _MapMainScreenState extends State<MapMainScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.star),
+            onPressed: () => context.push('/favorites'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await context.read<LoginViewModel>().signOut();

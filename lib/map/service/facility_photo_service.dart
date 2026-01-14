@@ -20,7 +20,7 @@ class PhotoService {
       }
 
       final data = snapshot.docs.first.data();
-      final List<dynamic>? urls = data['imageurls'] as List<dynamic>?;
+      final List<dynamic>? urls = data['imageUrls'] as List<dynamic>?;
 
       // List<dynamic>을 List<String>으로 변환하여 반환
       return urls?.map((e) => e.toString()).toList() ?? [];
