@@ -5,7 +5,7 @@ class TimePickerFieldWidget extends StatelessWidget {
   final String value;
   final VoidCallback onTap;
 
-  const TimePickerFieldWidget({
+  const TimePickerFieldWidget({super.key, 
     required this.label,
     required this.value,
     required this.onTap,

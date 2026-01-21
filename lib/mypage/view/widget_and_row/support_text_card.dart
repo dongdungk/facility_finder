@@ -6,7 +6,7 @@ class SupportTextCard extends StatelessWidget {
   final String title;
   final String contents;
 
-  const SupportTextCard({
+  const SupportTextCard({super.key, 
     required this.category,
     required this.title,
     required this.contents,

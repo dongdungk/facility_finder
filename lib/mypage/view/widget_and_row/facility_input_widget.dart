@@ -4,7 +4,7 @@ class FacilityInputWidget extends StatelessWidget {
   final String? label;
   final String? hint;
 
-  const FacilityInputWidget({required this.label, this.hint});
+  const FacilityInputWidget({super.key, required this.label, this.hint});
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'map/model/facility_review_model.dart';
 import 'map/view/facility_review_edit_screen.dart';
 import 'map/view/facility_review_write_screen.dart';
-import 'login/service/auth_service.dart';
 import 'login/view/login_view.dart';
 import 'map/view/main_screen.dart';
 import 'map/view/map_main_screen.dart';

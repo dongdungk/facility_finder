@@ -5,7 +5,7 @@ class SupportTile extends StatelessWidget {
   final Color iconColor;
   final String title;
 
-  const SupportTile({
+  const SupportTile({super.key, 
     required this.icon,
     required this.iconColor,
     required this.title,

@@ -5,7 +5,7 @@ class FormWidget extends StatelessWidget {
   final String title;
   final Widget child;
 
-  const FormWidget({
+  const FormWidget({super.key, 
     required this.icon,
     required this.title,
     required this.child,

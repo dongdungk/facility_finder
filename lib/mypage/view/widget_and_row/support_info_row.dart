@@ -4,7 +4,7 @@ class SupportInfoRow extends StatelessWidget {
   final IconData icon;
   final String text;
 
-  const SupportInfoRow({required this.icon, required this.text});
+  const SupportInfoRow({super.key, required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
