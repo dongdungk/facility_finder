@@ -25,7 +25,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       // 에러 코드 처리 (예: 이메일 형식 오류, 비밀번호 약함 등)
       print("Firebase Auth Error: ${e.code}");
-      throw e;
+      rethrow;
     } catch (e) {
       print("Error during email sign up: $e");
       rethrow;
@@ -45,7 +45,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       // 에러 코드 처리 (예: 사용자 없음, 비밀번호 불일치)
       print("Firebase Auth Error: ${e.code}");
-      throw e;
+      rethrow;
     } catch (e) {
       print("Error during email sign in: $e");
       rethrow;
@@ -93,7 +93,7 @@ class AuthService {
 
     } on FirebaseAuthException catch (e) {
       print("Firebase Google Auth Error: ${e.code}");
-      throw e;
+      rethrow;
     } catch (e) {
       print("Error during Google sign in: $e");
       rethrow;

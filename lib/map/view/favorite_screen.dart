@@ -320,7 +320,7 @@ class _ChipThumbShape extends SliderComponentShape {
         fontSize: 13,
         fontWeight: FontWeight.bold,
       ),
-      text: '${congestion}명',
+      text: '$congestion명',
     );
     final TextPainter tp = TextPainter(
       text: span, textAlign: TextAlign.center, textDirection: TextDirection.ltr,

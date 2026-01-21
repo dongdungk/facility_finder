@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/scheduler.dart';
 import '../viewmodel/facility_photo_viewmodel.dart';
 
 class FacilityPhotoScreen extends StatefulWidget {

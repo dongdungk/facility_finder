@@ -21,10 +21,30 @@ class _MapMainScreenState extends State<MapMainScreen> {
 
   // 그리드뷰에 표시될 시설 리스트
   final List<Map<String, String>> facilities = [
-    {"id": "월곡배드민턴장", "name": "월곡배드민턴장", "location": "성북구", "imageUrl": "assets/AKR20240416124700060_01_i_P4.jpg"},
-    {"id": "매봉산실내배드민턴장", "name": "매봉산실내배드민턴장", "location": "강남구", "imageUrl": "assets/badminton_img0302.jpg"},
-    {"id": "마곡레포츠센터 실내배드민턴장", "name": "마곡레포츠센터 실내배드민턴장", "location": "강서구", "imageUrl": "assets/cts5395_img07.jpg"},
-    {"id": "금화배드민턴장", "name": "금화배드민턴장", "location": "서대문구", "imageUrl": "assets/img_yongwang.jpg"}
+    {
+      "id": "월곡배드민턴장",
+      "name": "월곡배드민턴장",
+      "location": "성북구",
+      "imageUrl": "assets/AKR20240416124700060_01_i_P4.jpg",
+    },
+    {
+      "id": "매봉산실내배드민턴장",
+      "name": "매봉산실내배드민턴장",
+      "location": "강남구",
+      "imageUrl": "assets/badminton_img0302.jpg",
+    },
+    {
+      "id": "마곡레포츠센터 실내배드민턴장",
+      "name": "마곡레포츠센터 실내배드민턴장",
+      "location": "강서구",
+      "imageUrl": "assets/cts5395_img07.jpg",
+    },
+    {
+      "id": "금화배드민턴장",
+      "name": "금화배드민턴장",
+      "location": "서대문구",
+      "imageUrl": "assets/img_yongwang.jpg",
+    },
   ];
 
   @override
@@ -52,6 +72,10 @@ class _MapMainScreenState extends State<MapMainScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.star),
+            onPressed: () => context.push('/favorites'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await context.read<LoginViewModel>().signOut();
@@ -78,13 +102,16 @@ class _MapMainScreenState extends State<MapMainScreen> {
                     position: const LatLng(37.4936, 127.0623),
                     infoWindow: const InfoWindow(title: '강남스포츠센터'),
                     onTap: () => context.push('/facility/강남스포츠센터'),
-                  )
+                  ),
                 },
               ),
             ),
             const Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text('각 구별 인기 있는 시설들', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              child: Text(
+                '각 구별 인기 있는 시설들',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
             GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -114,8 +141,16 @@ class _MapMainScreenState extends State<MapMainScreen> {
         onTap: () => context.push('/facility/${item['id']}'),
         child: Column(
           children: [
-            Image.asset(item['imageUrl']!, height: 120, width: double.infinity, fit: BoxFit.cover),
-            Text(item['name']!, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Image.asset(
+              item['imageUrl']!,
+              height: 120,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Text(
+              item['name']!,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             Text(item['location']!),
           ],
         ),

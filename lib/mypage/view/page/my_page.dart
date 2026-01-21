@@ -221,7 +221,7 @@ class MyPage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.maxFinite,
                       child: OutlinedButton.icon(
                         onPressed: () {},
@@ -233,7 +233,7 @@ class MyPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Container(
+                    SizedBox(
                       width: double.maxFinite,
                       child: OutlinedButton.icon(
                         onPressed: () {},

@@ -1,7 +1,6 @@
 // lib/map/viewmodel/facility_review_viewmodel.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../service/facility_review_service.dart';
 import '../model/facility_review_model.dart';
 

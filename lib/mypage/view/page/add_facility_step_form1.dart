@@ -4,7 +4,7 @@ import '../widget_and_row/facility_input_widget.dart';
 import '../widget_and_row/form_widget.dart';
 
 class AddFacilityStepForm1 extends StatelessWidget {
-  const AddFacilityStepForm1();
+  const AddFacilityStepForm1({super.key});
 
   @override
   Widget build(BuildContext context) {

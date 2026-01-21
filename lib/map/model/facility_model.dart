@@ -9,6 +9,15 @@ class FacilityModel {
   final String district;
   final List<String> images;
 
+  // 새로 추가된 필드들
+  final String? detailedAddress;
+  final int? capacity;
+  final String? businessRegistrationNumber;
+  final String? representativeName;
+  final String? representativeContact;
+  final String? email;
+  final String? closedDays;
+
   // UI용 필드들
   final String hours;
   final String price;
@@ -30,6 +39,14 @@ class FacilityModel {
     this.lng = 0.0,
     this.district = '',
     this.images = const [],
+    // 새로 추가된 필드들 초기화
+    this.detailedAddress,
+    this.capacity,
+    this.businessRegistrationNumber,
+    this.representativeName,
+    this.representativeContact,
+    this.email,
+    this.closedDays,
     this.hours = '정보 없음',
     this.price = '무료',
     this.status = '정보 없음',
@@ -56,6 +73,16 @@ class FacilityModel {
       // 서울시 API 좌표 필드가 있다면 추가 (예: json['X_KOTI'])
       lat: double.tryParse(json['LAT']?.toString() ?? '0.0') ?? 0.0,
       lng: double.tryParse(json['LNG']?.toString() ?? '0.0') ?? 0.0,
+      // 새로 추가된 필드 파싱 (기본값 null)
+      detailedAddress: json['detailedAddress'],
+      capacity: json['capacity'] != null
+          ? int.tryParse(json['capacity'].toString())
+          : null,
+      businessRegistrationNumber: json['businessRegistrationNumber'],
+      representativeName: json['representativeName'],
+      representativeContact: json['representativeContact'],
+      email: json['email'],
+      closedDays: json['closedDays'],
     );
   }
 
@@ -71,6 +98,14 @@ class FacilityModel {
       lng: double.parse(doc['x']),
       district: doc['address_name'].split(' ')[1], // "서울 강남구..."에서 구 추출
       reservation: '카카오 예약 가능',
+      // 카카오 API에는 없는 필드들이므로 기본값 null
+      detailedAddress: null,
+      capacity: null,
+      businessRegistrationNumber: null,
+      representativeName: null,
+      representativeContact: null,
+      email: null,
+      closedDays: null,
     );
   }
 }
